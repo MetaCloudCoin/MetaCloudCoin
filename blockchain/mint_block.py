@@ -1,9 +1,15 @@
-import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import sys
+
+# This adds the root MetaCloudCoin directory to sys.path
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
 from hash_engine.generate_metadata_hash import generate_hash
 import time
 import json
+
 
 block = {
     "timestamp": time.time(),
