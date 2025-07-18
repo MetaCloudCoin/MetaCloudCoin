@@ -1,5 +1,4 @@
 import os
-print("sys.path:", sys.path)
 import sys
 
 # This adds the root MetaCloudCoin directory to sys.path
