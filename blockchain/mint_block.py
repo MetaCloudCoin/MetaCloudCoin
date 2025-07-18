@@ -1,4 +1,5 @@
 import os
+print("sys.path:", sys.path)
 import sys
 
 # This adds the root MetaCloudCoin directory to sys.path
@@ -22,4 +23,4 @@ with open("docs/metadata_block.json", "w") as f:
 
 print(f"Generated hash: {block['metadata_hash']}")
 print(f"Timestamp: {block['timestamp']}")
-print("sys.path:", sys.path)
+
