@@ -27,6 +27,7 @@
   </div>
   <p><a href="https://github.com/MetaCloudCoin/MetaCloudCoin">View GitHub Repository</a></p>
 
+<<<<<<< HEAD
   <script>
     fetch("metadata_block.json")
       .then(res => res.json())
@@ -39,5 +40,20 @@
         document.getElementById("timestamp").textContent = "--";
       });
   </script>
+=======
+<script>
+  fetch("metadata_block.json")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("hash").textContent = data.metadata_hash;
+      document.getElementById("timestamp").textContent = new Date(data.timestamp * 1000).toLocaleString();
+    })
+    .catch(() => {
+      document.getElementById("hash").textContent = "Error loading hash";
+      document.getElementById("timestamp").textContent = "--";
+    });
+</script>
+
+>>>>>>> de2493f3517b0b07dc6ed8319935cb5f9f439e8c
 </body>
 </html>
