@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MetaCloudCoin Explorer</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      background: #f9f9f9;
+    }
+    h1 { color: #3f51b5; }
+    .box {
+      background: white;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+    }
+  </style>
+</head>
+<body>
+  <h1>MetaCloudCoin Metadata Hash Explorer</h1>
+  <div class="box">
+    <p><strong>Latest AWS Metadata Hash:</strong></p>
+    <pre id="hash">Loading...</pre>
+    <p><strong>Last Updated:</strong> <span id="timestamp">--</span></p>
+  </div>
+  <p><a href="https://github.com/MetaCloudCoin/MetaCloudCoin">View GitHub Repository</a></p>
+
+  <script>
+    fetch("metadata_block.json")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("hash").textContent = data.metadata_hash;
+        document.getElementById("timestamp").textContent = new Date(data.timestamp * 1000).toLocaleString();
+      })
+      .catch(() => {
+        document.getElementById("hash").textContent = "Error loading hash";
+        document.getElementById("timestamp").textContent = "--";
+      });
+  </script>
+</body>
+</html>
