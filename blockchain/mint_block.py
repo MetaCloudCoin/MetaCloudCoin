@@ -1,3 +1,6 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from hash_engine.generate_metadata_hash import generate_hash
 import time
 import json
