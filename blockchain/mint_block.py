@@ -1,28 +1,43 @@
-import os
-import sys
-import json
-import time
+import os, sys, time, json
 
-# Add project root to sys.path for GitHub Actions or CLI
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-# ⬅️ Now import the updated generator function that returns both hash and metadata
-from hash_engine.generate_metadata_hash import generate_metadata_hash
+from hash_engine.generate_metadata_hash import generate_hash
 
-# ⬅️ Get both the hash and full metadata
-metadata_hash, full_metadata = generate_metadata_hash()
+BLOCK_PATH = "docs/metadata_block.json"
+HISTORY_PATH = "docs/metadata_block_history.json"
 
-block = {
+# Generate current block
+new_block = {
     "timestamp": time.time(),
-    "metadata_hash": metadata_hash,
-    "providers": full_metadata["providers"]
+    "metadata_hash": generate_hash()
 }
 
-# Save as metadata_block.json
-with open("docs/metadata_block.json", "w") as f:
-    json.dump(block, f, indent=2)
+# Load previous block
+try:
+    with open(BLOCK_PATH, "r") as f:
+        old_block = json.load(f)
+except FileNotFoundError:
+    old_block = None
 
-print(f"✅ Generated hash: {block['metadata_hash']}")
-print(f"🕒 Timestamp: {block['timestamp']}")
+# Compare hashes
+if not old_block or new_block["metadata_hash"] != old_block["metadata_hash"]:
+    with open(BLOCK_PATH, "w") as f:
+        json.dump(new_block, f, indent=2)
+
+    # Append to history
+    try:
+        with open(HISTORY_PATH, "r") as f:
+            history = json.load(f)
+    except FileNotFoundError:
+        history = []
+
+    history.append(new_block)
+    with open(HISTORY_PATH, "w") as f:
+        json.dump(history, f, indent=2)
+
+    print("✅ New metadata detected. Block added.")
+else:
+    print("⏩ No change in metadata. Skipped block.")
