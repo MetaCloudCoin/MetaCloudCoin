@@ -1,13 +1,13 @@
 import json
 import hashlib
-from metadata.fetchers import aws_ip_ranges, azure_status
+from metadata.fetchers import aws_ip_ranges, azure_status, gcp_ip_ranges
 from datetime import datetime
 
 def generate_metadata_hash():
     # Fetch metadata from providers
     aws_data = aws_ip_ranges.fetch_aws_ip_ranges()
     azure_data = azure_status.fetch_azure_status()
-
+    gcp_data = gcp_ip_ranges.fetch_gcp_metadata()
     # Combine metadata
     combined_metadata = {
         "timestamp": datetime.utcnow().isoformat() + "Z",
