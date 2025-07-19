@@ -1,8 +1,17 @@
-import hashlib
 import json
-from metadata.fetch_aws_ip_ranges import fetch_aws_ip_ranges
+from metadata.fetchers.aws_ip_ranges import fetch_aws_ip_ranges
+from metadata.fetchers.azure_status import fetch_azure_status
+from metadata.fetchers.gcp_pricing import fetch_gcp_pricing
+from utils.hash_utils import sha256_hash
 
 def generate_hash():
-    data = fetch_aws_ip_ranges()
-    raw = json.dumps(data, sort_keys=True).encode('utf-8')
-    return hashlib.sha256(raw).hexdigest()
+    metadata = {
+        "aws": fetch_aws_ip_ranges(),
+        "azure": fetch_azure_status(),
+        "gcp": fetch_gcp_pricing()
+    }
+    metadata_json = json.dumps(metadata, sort_keys=True)
+    return sha256_hash(metadata_json)
+
+if __name__ == "__main__":
+    print(generate_hash())
