@@ -1,18 +1,23 @@
-import json
+import feedparser
 from datetime import datetime
 
 def fetch_azure_status():
-    """
-    Simulates Azure service metadata.
-    Replace with real API if available in future.
-    """
-    return {
-        "provider": "Azure",
-        "timestamp": datetime.utcnow().isoformat(),
-        "services": [
-            {"name": "Compute", "status": "Available"},
-            {"name": "Storage", "status": "Available"},
-            {"name": "Networking", "status": "Available"}
-        ],
-        "region": "global"
-    }
+    try:
+        url = "https://status.azure.com/en-us/status/feed/"
+        feed = feedparser.parse(url)
+
+        status_summary = []
+        for entry in feed.entries[:5]:  # Limit to recent 5 events
+            status_summary.append({
+                "title": entry.title,
+                "published": entry.published,
+                "summary": entry.summary
+            })
+
+        return {
+            "fetched_at": datetime.utcnow().isoformat() + "Z",
+            "status_updates": status_summary
+        }
+
+    except Exception as e:
+        return {"error": str(e)}
