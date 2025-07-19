@@ -1,10 +1,15 @@
 import requests
 
 def fetch_azure_status():
-    url = "https://status.azure.com/en-us/status"
-    # Placeholder: No official public JSON endpoint for Azure status
-    # In production, you'd need an HTML scraper or Azure Service Health API
-    return {
-        "status": "unavailable",
-        "note": "Azure public status JSON not available. Use Azure Health API instead."
-    }
+    """
+    Fetches the Azure service health metadata.
+    Returns:
+        dict: JSON metadata or error message.
+    """
+    url = "https://azure.microsoft.com/api/status/en-us/status.json"
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException as e:
+        return {"error": str(e)}
