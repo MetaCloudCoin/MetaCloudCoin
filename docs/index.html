@@ -29,7 +29,7 @@
 
 
   <script>
-    fetch('docs/metadata_block.json')
+    fetch('metadata_block.json')
       .then(res => res.json())
       .then(data => {
         document.getElementById("hash").textContent = data.metadata_hash;
