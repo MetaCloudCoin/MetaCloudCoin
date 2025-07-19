@@ -1,15 +1,14 @@
 name: Auto Mint Metadata Block
 
 on:
-  schedule:
-    - cron: '0 */3 * * *'  # Every 3 hours
-  workflow_dispatch:       # Manual trigger
+  workflow_dispatch:
 
 jobs:
   mint:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repo
+      - name: Checkout Repo
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -19,18 +18,8 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+        working-directory: ${{ github.workspace }}
 
-      - name: Run metadata minting
+      - name: Run mint_block.py
         run: python blockchain/mint_block.py
-
-      - name: Commit changes if any
-        run: |
-          git config --global user.name 'MetaCloudBot'
-          git config --global user.email 'bot@metacloudcoin.org'
-          git add docs/metadata_block*.json || true
-          if ! git diff --cached --quiet; then
-            git commit -m "🤖 Auto-minted new metadata block"
-            git push
-          else
-            echo "No changes to commit."
-          fi
+        working-directory: ${{ github.workspace }}
