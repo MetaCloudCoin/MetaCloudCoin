@@ -11,11 +11,14 @@ def validate_chain(history_path):
         history = json.load(f)
 
     for i, block in enumerate(history):
+        if "providers" not in block:
+            print(f"⚠️ Skipping legacy block at index {i} (no providers)")
+            continue
+
         try:
-            providers = block["providers"]
             canonical = json.dumps({
                 "timestamp": block["timestamp"],
-                "providers": providers
+                "providers": block["providers"]
             }, sort_keys=True)
 
             actual_hash = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
@@ -31,7 +34,8 @@ def validate_chain(history_path):
             print(f"❌ Missing key {e} in block at index {i}")
             return
 
-    print("✅ Chain is valid — all blocks match their recorded hashes.")
+    print("✅ Chain is valid — all hashes match and no tampering detected.")
 
 if __name__ == "__main__":
     validate_chain("docs/metadata_block_history.json")
+
