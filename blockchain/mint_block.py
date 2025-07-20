@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Ensure project root is in path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -15,7 +15,7 @@ from hash_engine.generate_metadata_hash import generate_hash
 metadata_hash, metadata = generate_hash()
 
 block = {
-    "timestamp": datetime.utcnow().isoformat() + "Z",
+    "timestamp": datetime.now(timezone.utc).isoformat(),
     "metadata_hash": metadata_hash,
     "providers": metadata["providers"]
 }
