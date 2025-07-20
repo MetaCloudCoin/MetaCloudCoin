@@ -1,46 +1,28 @@
 import os
 import sys
 import json
-import time
-from datetime import datetime, timezone
+from datetime import datetime
+from hash_engine.generate_metadata_hash import generate_hash
 
-# Ensure project root is in path
+# Set path for GitHub Actions (if needed)
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from hash_engine.generate_metadata_hash import generate_hash
-
-# Generate metadata
-metadata_hash, metadata = generate_hash()
+# Generate fresh metadata
+metadata_hash, combined_metadata = generate_hash()
 
 block = {
-    "timestamp": datetime.now(timezone.utc).isoformat(),
+    "timestamp": combined_metadata["timestamp"],
     "metadata_hash": metadata_hash,
-    "providers": metadata["providers"]
+    "providers": combined_metadata["providers"],
+    "region": "global"
 }
 
-# 🔄 Corrected to match GitHub repo filename
-history_path = os.path.join(project_root, "docs", "metadata_block_history.json")
+# Overwrite full chain history with just this one block
+with open("docs/metadata_block_history.json", "w") as f:
+    json.dump([block], f, indent=2)
 
-# Load or initialize history
-if os.path.exists(history_path):
-    with open(history_path, "r") as f:
-        history = json.load(f)
-else:
-    history = []
-
-# Append new block
-history.append(block)
-
-# Save back to history file
-with open(history_path, "w") as f:
-    json.dump(history, f, indent=2)
-
-# Optional: update current block too
-with open(os.path.join(project_root, "docs", "metadata_block.json"), "w") as f:
-    json.dump(block, f, indent=2)
-
-print("✅ New metadata block appended to metadata_block_history.json")
+print("✅ Chain reset with a single valid block.")
 print(f"Metadata hash: {metadata_hash}")
 
